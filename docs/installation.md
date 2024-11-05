@@ -19,7 +19,7 @@ Fair warning - this has only been tested with Nvidia and Cuda so far and it's re
 Basic use is as easy as:
 
 ```bash
-docker run --gpus all -v cj_data:/data -v cj_instance_data:/opt/web/crackerjack/data -p 8888:8888 brainthee/crackerjack
+docker run --gpus all -v cj_data:/data -v cj_instance_data:/opt/web/crackerjack/data -p 8888:8888 brainthee/crackerjack 
 ```
 
 - The `cj_data` volume would store the various wordlist/mash/rules etc directories.
