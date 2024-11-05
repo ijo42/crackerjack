@@ -1,5 +1,6 @@
 # CrackerJack Installation
 
+* [Docker](#docker)
 * [Requirements](#requirements)
 * [Updates](#update-to-latest-version)
 * [Installation](#installation)
@@ -8,6 +9,22 @@
 * [Third-Party Software](#third-party-software)
   * [Screen](#screen)
   * [Hashcat](#hashcat)
+
+## Docker
+
+A somewhat rudimentary Dockerfile has been created and allows for Hashcat to be run in a Docker container with GPU passthrough. 
+
+Fair warning - this has only been tested with Nvidia and Cuda so far and it's recommended you have some experience with Docker.
+
+Basic use is as easy as:
+
+```bash
+docker run --gpus all -v cj_data:/data -v cj_instance_data:/opt/web/crackerjack/data -p 8888:8888 brainthee/crackerjack
+```
+
+- The `cj_data` volume would store the various wordlist/mash/rules etc directories.
+- The `cj_instance_data` volume maps the SQLite database and session data directories to a persistent volume.
+- `--gpus all` passes through your GPUs for use. You need a working Docker configuration that supports passthrough. 
 
 
 ## Requirements
