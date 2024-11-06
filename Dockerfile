@@ -73,8 +73,6 @@ RUN pip3 install -r ./requirements.txt
 
 # Run app stuff...
 RUN sudo -Eu cj -- flask db init
-RUN sudo -Eu cj -- flask db migrate
-RUN sudo -Eu cj -- flask db upgrade
 RUN sudo -Eu cj -- flask crontab add
 
 RUN mkdir /home/cj/.hashcat
@@ -84,4 +82,5 @@ RUN chown cj:cj -R /home/cj/.hashcat
 # ${CRACKERJACK_DESTINATION}/data
 
 # run entrypoint.sh
+ENTRYPOINT ["${CRACKERJACK_DESTINATION}/entrypoint.sh"]
 CMD ["gunicorn", "--workers", "3", "-m", "007", "wsgi:app"]
