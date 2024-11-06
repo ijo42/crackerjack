@@ -11,3 +11,4 @@ packaging
 pywebpush
 markupsafe==2.0.1
 sqlalchemy==1.4.39
+msal>=1.18,<2
