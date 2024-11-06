@@ -112,7 +112,7 @@ class Provider:
             settings.get('azure_tenant_id', ''),
             settings.get('azure_client_id', ''),
             settings.get('azure_client_secret', ''),
-            url_for('auth.auth_azure', _external=True)
+            url_for('auth.auth_azure', _scheme='https', _external=True)
         )
 
 
