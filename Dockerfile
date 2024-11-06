@@ -16,7 +16,6 @@ ENV LC_ALL C.UTF-8
 ENV PORT=8888
 EXPOSE ${PORT}
 
-ENV CRACKERJACK_DESTINATION=/opt/web/crackerjack
 ENV DATA_DIR=/data
 ENV WORDLIST_DIR=${DATA_DIR}/wordlists
 ENV RULES_DIR=${DATA_DIR}/rules
@@ -52,7 +51,7 @@ RUN groupadd -g "${GID}" cj
 RUN useradd --create-home --no-log-init -u "${UID}" -g "${GID}" cj
 
 # Create directories
-RUN mkdir -p ${CRACKERJACK_DESTINATION}
+RUN mkdir -p /opt/web/crackerjack
 
 RUN mkdir -p ${DATA_DIR}
 RUN mkdir -p ${WORDLIST_DIR}
@@ -60,13 +59,13 @@ RUN mkdir -p ${RULES_DIR}
 RUN mkdir -p ${MASKS_DIR}
 RUN mkdir -p ${UPLOADED_DIR}
 
-RUN chown cj:cj -R ${CRACKERJACK_DESTINATION}
+RUN chown cj:cj -R /opt/web/crackerjack
 
 # copy project
-COPY --chown=cj:cj . ${CRACKERJACK_DESTINATION}
+COPY --chown=cj:cj . /opt/web/crackerjack
 
 # set work directory
-WORKDIR ${CRACKERJACK_DESTINATION}
+WORKDIR /opt/web/crackerjack
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r ./requirements.txt
@@ -79,8 +78,8 @@ RUN mkdir /home/cj/.hashcat
 RUN chown cj:cj -R /home/cj/.hashcat
 
 # Data path:
-# ${CRACKERJACK_DESTINATION}/data
+# /opt/web/crackerjack/data
 
 # run entrypoint.sh
-ENTRYPOINT ["${CRACKERJACK_DESTINATION}/entrypoint.sh"]
+ENTRYPOINT ["/opt/web/crackerjack/entrypoint.sh"]
 CMD ["gunicorn", "--workers", "3", "-m", "007", "wsgi:app"]
