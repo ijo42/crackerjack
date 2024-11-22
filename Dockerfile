@@ -26,40 +26,21 @@ ENV UPLOADED_DIR=${DATA_DIR}/uploaded
 WORKDIR /app
 
 # install sys dependencies
-RUN apt-get update --fix-missing
-RUN apt-get upgrade -y
-RUN apt-get install -y git sudo cron screen sqlite3
-RUN apt-get install -y python3 python3-dev python3-setuptools
-RUN apt-get install -y python3-pip python3-virtualenv
-RUN apt-get install -y supervisor
-RUN apt-get install -y hashcat
-
-# Cleanup
-RUN rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man
-RUN apt-get clean
-
-# Stop some services
-RUN service supervisor stop
-RUN service cron stop
-
-# Install Python utils
-RUN pip3 install --upgrade pip
-RUN pip3 install cryptography
-
-# Setup user
-RUN groupadd -g "${GID}" cj
-RUN useradd --create-home --no-log-init -u "${UID}" -g "${GID}" cj
-
-# Create directories
-RUN mkdir -p /opt/web/crackerjack
-
-RUN mkdir -p ${DATA_DIR}
-RUN mkdir -p ${WORDLIST_DIR}
-RUN mkdir -p ${RULES_DIR}
-RUN mkdir -p ${MASKS_DIR}
-RUN mkdir -p ${UPLOADED_DIR}
-
-RUN chown cj:cj -R /opt/web/crackerjack
+RUN apt-get update --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get install -y git sudo cron screen sqlite3 python3 python3-dev python3-setuptools  \
+            python3-pip python3-virtualenv supervisor hashcat && \
+    service supervisor stop && \
+    service cron stop && \
+    pip3 install --upgrade pip &&  \
+    pip3 install cryptography && \
+    groupadd -g "${GID}" cj && \
+    useradd --create-home --no-log-init -u "${UID}" -g "${GID}" cj && \
+    mkdir -p /opt/web/crackerjack &&  \
+    mkdir -p ${DATA_DIR} ${WORDLIST_DIR} ${RULES_DIR} ${MASKS_DIR} ${UPLOADED_DIR} &&  \
+    chown cj:cj -R /opt/web/crackerjack && \
+    rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man && \
+    apt-get clean \
 
 # copy project
 COPY --chown=cj:cj . /opt/web/crackerjack
@@ -67,15 +48,11 @@ COPY --chown=cj:cj . /opt/web/crackerjack
 # set work directory
 WORKDIR /opt/web/crackerjack
 
-RUN pip3 install --upgrade pip
-RUN pip3 install -r ./requirements.txt
-
-# Run app stuff...
-RUN sudo -Eu cj -- flask db init
-RUN sudo -Eu cj -- flask crontab add
-
-RUN mkdir /home/cj/.hashcat
-RUN chown cj:cj -R /home/cj/.hashcat
+RUN pip3 install -r ./requirements.txt && \
+    sudo -Eu cj -- flask db init && \
+    sudo -Eu cj -- flask crontab add && \
+    mkdir /home/cj/.hashcat && \
+    chown cj:cj -R /home/cj/.hashcat
 
 # Data path:
 # /opt/web/crackerjack/data
